@@ -9,12 +9,16 @@
 import Dealer from "./components/Dealer.vue";
 import Hands from "./components/Hands.vue";
 
+// Sockets io
+
 export default {
   name: "App",
+
   components: {
     Dealer,
     Hands,
   },
+
   data() {
     return {
       deck: [
@@ -71,6 +75,7 @@ export default {
         { suit: "diamonds", value: 12, id: 51 },
         { suit: "diamonds", value: 13, id: 52 },
       ],
+
       playerHands: [
         {
           player: 1,
@@ -111,6 +116,7 @@ export default {
       ],
     };
   },
+
   methods: {
     dealCards() {
       this.playerHands.forEach((player) => {
@@ -241,6 +247,25 @@ export default {
         this.deck.splice(this.deck.indexOf(randomCard2), 1);
       });
     },
+
+    sendMessage: function (message) {
+      console.log(this.connection);
+      this.connection.send(message);
+    },
+  },
+
+  created: function () {
+    console.log("Starting connection to WebSocket Server");
+    this.connection = new WebSocket("wss://echo.websocket.org");
+
+    this.connection.onopen = function (event) {
+      console.log(event);
+      console.log("Successfully connected to the echo WebSocket Server");
+    };
+
+    this.connection.onmessage = function (event) {
+      console.log(event);
+    };
   },
 };
 </script>
